@@ -13,7 +13,7 @@ A library that makes creating a 360° viewer extremely easy.
 ## Installation
 
 ```bash
-npm install --save three-sixty
+npm install --save @mediaman/three-sixty
 ```
 
 ## Importing library
@@ -27,6 +27,21 @@ import ThreeSixty from '@mediaman/three-sixty';
 ## Usage
 
 ### Basic usage
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>360°</title>
+    
+    <link rel="stylesheet" href="node_modules/@mediaman/three-sixty/dist/three-sixty.css">
+</head>
+<body>
+<canvas width="1280" height="720"></canvas>
+</body>
+</html>
+```
 
 ```javascript
 const threeSixty = new ThreeSixty(document.getElementsByTagName('canvas')[0], {
