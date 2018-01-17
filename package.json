@@ -21,7 +21,7 @@
   "scripts": {
     "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist",
-    "build": "tsc --module commonjs --outDir dist/lib && rollup -c rollup.config.ts && typedoc --out dist/docs --target es6 --theme minimal --mode file src",
+    "build": "tsc --module commonjs --outDir dist/lib && rollup -c rollup.config.ts && typedoc --out dist/docs --target es6 --theme minimal --mode file src && node-sass --output-style compressed src/scss/three-sixty.scss dist/three-sixty.css",
     "start": "rollup -c rollup.config.ts -w",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -87,6 +87,7 @@
     "lint-staged": "^6.0.0",
     "lodash.camelcase": "^4.3.0",
     "marked": "^0.3.9",
+    "node-sass": "^4.7.2",
     "prettier": "^1.4.4",
     "prompt": "^1.0.0",
     "replace-in-file": "^3.0.0-beta.2",
