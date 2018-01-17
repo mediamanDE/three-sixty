@@ -1,26 +1,27 @@
-import { HotspotInterface } from './hotspot.interface'
+import { HotspotInterface } from './hotspot.interface';
 
 export interface ConfigurationInterface {
-  /**
+
+    /**
      * @type {number}
      */
-  angles: number
+    angles: number;
 
-  /**
+    /**
      * @type {number}
      */
-  anglesPerImage: number
+    anglesPerImage: number;
 
-  /**
+    /**
      * The factor which increases the drag speed
      * Default to 5
      *
      * @type {number}
      */
-  speedFactor?: number
+    speedFactor?: number;
 
-  /**
+    /**
      * @type {HotspotInterface[]}
      */
-  hotspots?: HotspotInterface[]
+    hotspots?: HotspotInterface[];
 }

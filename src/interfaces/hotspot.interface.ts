@@ -1,26 +1,27 @@
 export interface HotspotInterface {
-  /**
+
+    /**
      * @type {string}
      */
-  text: string
+    text: string;
 
-  /**
+    /**
      * @type {number}
      */
-  angle: number
+    angle: number;
 
-  /**
+    /**
      * @type {number}
      */
-  endAngle: number
+    endAngle: number;
 
-  /**
+    /**
      * @type {string}
      */
-  top?: string
+    top?: string;
 
-  /**
+    /**
      * @type {string}
      */
-  left?: string
+    left?: string;
 }
