@@ -2,6 +2,8 @@
 
 A library that makes creating a 360° viewer extremely easy.
 
+[![Build Status](https://travis-ci.org/mediamanDE/three-sixty.svg?branch=master)](https://travis-ci.org/mediamanDE/three-sixty)
+
 ## Features
 
   - Works on desktop and on touch devices
