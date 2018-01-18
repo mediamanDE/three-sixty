@@ -2,6 +2,8 @@
 
 A library that makes creating a 360° viewer extremely easy.
 
+[![npm version](https://badge.fury.io/js/%40mediaman%2Fthree-sixty.svg)](https://badge.fury.io/js/%40mediaman%2Fthree-sixty)
+
 ## Features
 
   - Works on desktop and on touch devices
