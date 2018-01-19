@@ -80,8 +80,13 @@ export default class ThreeSixty {
      * Initialize the three sixty widget
      *
      * @param {string[]} images - Array of image sprites
+     * @param {number} startAngle - The initial angle to show (number between 0 and 360)
      */
-    public initialize(images: string[]) {
+    public initialize(images: string[], startAngle: number = 0) {
+        if (startAngle < 0 || startAngle > 360) {
+            throw new Error('The specified start angle must be between 0 and 360.');
+        }
+
         this.images = images;
 
         // Wrap the canvas element
@@ -93,8 +98,18 @@ export default class ThreeSixty {
         this.initializeHotspots();
         this.initializeEventListeners();
 
-        this.imageLoader.load(this.images[0])
-            .then((image) => this.drawAngle(image, 0));
+        let targetImageIndex = Math.round(startAngle / (360 / this.configuration.angles)) - 1;
+        let targetSpriteIndex = Math.floor(targetImageIndex / this.configuration.anglesPerImage) - 1;
+
+        if (targetImageIndex < 0) {
+            targetImageIndex = 0;
+        }
+        if (targetSpriteIndex < 0) {
+            targetSpriteIndex = 0;
+        }
+
+        this.imageLoader.load(this.images[targetSpriteIndex])
+            .then((image) => this.drawAngle(image, targetImageIndex % this.configuration.angles));
     }
 
     /**
@@ -162,6 +177,23 @@ export default class ThreeSixty {
                 this.hotspotElements.push(hotspotElement);
             });
             this.hotspotElements.forEach((hotSpotElement) => this.containerElement.appendChild(hotSpotElement));
+
+            this.showActiveHotspots();
+        }
+    }
+
+    /**
+     * Show the active hotspots
+     */
+    private showActiveHotspots() {
+        if (this.configuration.hotspots) {
+            this.configuration.hotspots.forEach((hotspot: HotspotInterface, i: number) => {
+                if (hotspot.angle <= this.angle && hotspot.endAngle > this.angle) {
+                    this.hotspotElements[i].classList.add(ThreeSixty.HOTSPOT_ACTIVE_CLASS);
+                } else {
+                    this.hotspotElements[i].classList.remove(ThreeSixty.HOTSPOT_ACTIVE_CLASS);
+                }
+            });
         }
     }
 
@@ -221,16 +253,7 @@ export default class ThreeSixty {
         const targetImageIndex = (Math.floor((Math.atan2(sn, -cs) / (Math.PI * 2) + 0.5) * this.configuration.angles) % this.configuration.angles);
         const targetSpriteIndex = Math.floor(targetImageIndex / this.configuration.anglesPerImage);
 
-        // Show the current hotspot(s)
-        if (this.configuration.hotspots) {
-            this.configuration.hotspots.forEach((hotspot: HotspotInterface, i: number) => {
-                if (hotspot.angle < this.angle && hotspot.endAngle > this.angle) {
-                    this.hotspotElements[i].classList.add(ThreeSixty.HOTSPOT_ACTIVE_CLASS);
-                } else {
-                    this.hotspotElements[i].classList.remove(ThreeSixty.HOTSPOT_ACTIVE_CLASS);
-                }
-            });
-        }
+        this.showActiveHotspots();
 
         // Load and render new image angle
         this.imageLoader.load(this.images[targetSpriteIndex])
