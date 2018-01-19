@@ -138,6 +138,20 @@ describe('ThreeSixty', () => {
             expect(() => threeSixty.initialize(imageUrls, 361)).toThrow(expectedErrorMessage);
         });
 
+        it('should show a hotspot when its configured angle is the start angle', () => {
+            const threeSixty = new ThreeSixty(canvasElement, {angles: 36, anglesPerImage: 9, hotspots: [
+                {text: 'Lorem ipsum', angle: 0.5, endAngle: 0.7, top: '30%', left: '50%'},
+                {text: 'Dolor sit amet', angle: 0, endAngle: 0.3, top: '42%', left: '55%'}
+            ]});
+
+            threeSixty.initialize(imageUrls);
+
+            const threeSixtyWrapperElement = document.querySelector(`.${ThreeSixty.CONTAINER_CLASS}`);
+            const hotspotElements = threeSixtyWrapperElement.querySelectorAll(`.${ThreeSixty.HOTSPOT_CLASS}`);
+
+            expect(hotspotElements[1].classList).toContain(ThreeSixty.HOTSPOT_ACTIVE_CLASS);
+        });
+
         it('should load the correct image on drag', (done) => {
             const threeSixty = new ThreeSixty(canvasElement, {angles: 36, anglesPerImage: 9});
             const imageLoader = threeSixty['imageLoader'] as ImageLoader;

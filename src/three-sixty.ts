@@ -177,6 +177,23 @@ export default class ThreeSixty {
                 this.hotspotElements.push(hotspotElement);
             });
             this.hotspotElements.forEach((hotSpotElement) => this.containerElement.appendChild(hotSpotElement));
+
+            this.showActiveHotspots();
+        }
+    }
+
+    /**
+     * Show the active hotspots
+     */
+    private showActiveHotspots() {
+        if (this.configuration.hotspots) {
+            this.configuration.hotspots.forEach((hotspot: HotspotInterface, i: number) => {
+                if (hotspot.angle <= this.angle && hotspot.endAngle > this.angle) {
+                    this.hotspotElements[i].classList.add(ThreeSixty.HOTSPOT_ACTIVE_CLASS);
+                } else {
+                    this.hotspotElements[i].classList.remove(ThreeSixty.HOTSPOT_ACTIVE_CLASS);
+                }
+            });
         }
     }
 
@@ -236,16 +253,7 @@ export default class ThreeSixty {
         const targetImageIndex = (Math.floor((Math.atan2(sn, -cs) / (Math.PI * 2) + 0.5) * this.configuration.angles) % this.configuration.angles);
         const targetSpriteIndex = Math.floor(targetImageIndex / this.configuration.anglesPerImage);
 
-        // Show the current hotspot(s)
-        if (this.configuration.hotspots) {
-            this.configuration.hotspots.forEach((hotspot: HotspotInterface, i: number) => {
-                if (hotspot.angle < this.angle && hotspot.endAngle > this.angle) {
-                    this.hotspotElements[i].classList.add(ThreeSixty.HOTSPOT_ACTIVE_CLASS);
-                } else {
-                    this.hotspotElements[i].classList.remove(ThreeSixty.HOTSPOT_ACTIVE_CLASS);
-                }
-            });
-        }
+        this.showActiveHotspots();
 
         // Load and render new image angle
         this.imageLoader.load(this.images[targetSpriteIndex])
