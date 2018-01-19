@@ -6,7 +6,9 @@ describe('ThreeSixty', () => {
         'http://example.com/image-0.jpg',
         'http://example.com/image-1.jpg',
         'http://example.com/image-2.jpg',
-        'http://example.com/image-3.jpg'
+        'http://example.com/image-3.jpg',
+        'http://example.com/image-4.jpg',
+        'http://example.com/image-5.jpg'
     ];
     const hotspots = [
         {text: 'Lorem ipsum', angle: 0.5, endAngle: 0.7, top: '30%', left: '50%'},
@@ -30,7 +32,9 @@ describe('ThreeSixty', () => {
     afterEach(() => {
         const threeSixtyWrapperElement = document.querySelector(`.${ThreeSixty.CONTAINER_CLASS}`);
 
-        document.body.removeChild(threeSixtyWrapperElement);
+        if (threeSixtyWrapperElement) {
+            document.body.removeChild(threeSixtyWrapperElement);
+        }
     });
 
     describe('::initialize', () => {
@@ -100,6 +104,38 @@ describe('ThreeSixty', () => {
 
                 done();
             }, 50);
+        });
+
+        it('should load the specified start angle', (done) => {
+            const threeSixty = new ThreeSixty(canvasElement, {angles: 36, anglesPerImage: 9});
+            const imageLoader = threeSixty['imageLoader'] as ImageLoader;
+            const initialImageMock = new Image();
+
+            spyOn(imageLoader, 'load').and.returnValue(new Promise((resolve) => resolve(initialImageMock)));
+
+            threeSixty.initialize(imageUrls, 185);
+
+            expect(imageLoader.load).toHaveBeenCalledWith(imageUrls[1]);
+
+            setTimeout(() => {
+                expect(canvas2dContextMock.drawImage).toHaveBeenCalledWith(
+                    initialImageMock,
+                    0,
+                    -canvasElement.height * 18,
+                    canvasElement.width,
+                    canvasElement.height * 9
+                );
+
+                done();
+            }, 50);
+        });
+
+        it('should throw an error if an invalid start angle was specified', () => {
+            const expectedErrorMessage = 'The specified start angle must be between 0 and 360.';
+            const threeSixty = new ThreeSixty(canvasElement, {angles: 36, anglesPerImage: 9});
+
+            expect(() => threeSixty.initialize(imageUrls, -1)).toThrow(expectedErrorMessage);
+            expect(() => threeSixty.initialize(imageUrls, 361)).toThrow(expectedErrorMessage);
         });
 
         it('should load the correct image on drag', (done) => {

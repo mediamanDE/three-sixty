@@ -80,8 +80,13 @@ export default class ThreeSixty {
      * Initialize the three sixty widget
      *
      * @param {string[]} images - Array of image sprites
+     * @param {number} startAngle - The initial angle to show (number between 0 and 360)
      */
-    public initialize(images: string[]) {
+    public initialize(images: string[], startAngle: number = 0) {
+        if (startAngle < 0 || startAngle > 360) {
+            throw new Error('The specified start angle must be between 0 and 360.');
+        }
+
         this.images = images;
 
         // Wrap the canvas element
@@ -93,8 +98,18 @@ export default class ThreeSixty {
         this.initializeHotspots();
         this.initializeEventListeners();
 
-        this.imageLoader.load(this.images[0])
-            .then((image) => this.drawAngle(image, 0));
+        let targetImageIndex = Math.round(startAngle / (360 / this.configuration.angles)) - 1;
+        let targetSpriteIndex = Math.floor(targetImageIndex / this.configuration.anglesPerImage) - 1;
+
+        if (targetImageIndex < 0) {
+            targetImageIndex = 0;
+        }
+        if (targetSpriteIndex < 0) {
+            targetSpriteIndex = 0;
+        }
+
+        this.imageLoader.load(this.images[targetSpriteIndex])
+            .then((image) => this.drawAngle(image, targetImageIndex % this.configuration.angles));
     }
 
     /**
