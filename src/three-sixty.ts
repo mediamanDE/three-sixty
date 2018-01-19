@@ -127,6 +127,21 @@ export default class ThreeSixty {
     }
 
     /**
+     * Update and re-render the images
+     *
+     * @param {string[]} images
+     */
+    public updateImages(images: string[]) {
+        this.images.splice(0);
+        this.images.push(...images);
+
+        const imageIndexes = this.getImageIndexesForCurrentAngle();
+
+        this.imageLoader.load(this.images[imageIndexes.targetSpriteIndex])
+            .then((image) => this.drawAngle(image, imageIndexes.targetImageIndex));
+    }
+
+    /**
      * Preload all images
      *
      * @returns {Promise<null>}
@@ -210,6 +225,19 @@ export default class ThreeSixty {
     }
 
     /**
+     * Get the target image indexes for the current angle
+     */
+    private getImageIndexesForCurrentAngle(): {targetImageIndex: number, targetSpriteIndex: number} {
+        const sn = Math.sin(this.angle * Math.PI * 2);
+        const cs = Math.cos(this.angle * Math.PI * 2);
+
+        const targetImageIndex = (Math.floor((Math.atan2(sn, -cs) / (Math.PI * 2) + 0.5) * this.configuration.angles) % this.configuration.angles);
+        const targetSpriteIndex = Math.floor(targetImageIndex / this.configuration.anglesPerImage);
+
+        return {targetImageIndex: targetImageIndex % this.configuration.anglesPerImage, targetSpriteIndex};
+    }
+
+    /**
      * Draw a specific angle
      *
      * @param {Image} image
@@ -247,17 +275,13 @@ export default class ThreeSixty {
         // Calculate new image angle
         this.adaptAngle(e.deltaX);
 
-        const sn = Math.sin(this.angle * Math.PI * 2);
-        const cs = Math.cos(this.angle * Math.PI * 2);
-
-        const targetImageIndex = (Math.floor((Math.atan2(sn, -cs) / (Math.PI * 2) + 0.5) * this.configuration.angles) % this.configuration.angles);
-        const targetSpriteIndex = Math.floor(targetImageIndex / this.configuration.anglesPerImage);
-
-        this.showActiveHotspots();
+        const imageIndexes = this.getImageIndexesForCurrentAngle();
 
         // Load and render new image angle
-        this.imageLoader.load(this.images[targetSpriteIndex])
-            .then((image) => this.drawAngle(image, (targetImageIndex % this.configuration.anglesPerImage)));
+        this.imageLoader.load(this.images[imageIndexes.targetSpriteIndex])
+            .then((image) => this.drawAngle(image, (imageIndexes.targetImageIndex)));
+
+        this.showActiveHotspots();
     }
 
     /**
