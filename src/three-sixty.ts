@@ -113,6 +113,20 @@ export default class ThreeSixty {
     }
 
     /**
+     * Update the configuration and re-render the hotspots
+     *
+     * @param {ConfigurationInterface} configuration
+     */
+    public updateConfiguration(configuration: ConfigurationInterface) {
+        this.configuration = configuration;
+
+        this.hotspotElements.forEach((hotspotElement: HTMLElement) => hotspotElement.parentElement.removeChild(hotspotElement));
+        this.hotspotElements = [];
+
+        this.initializeHotspots();
+    }
+
+    /**
      * Preload all images
      *
      * @returns {Promise<null>}

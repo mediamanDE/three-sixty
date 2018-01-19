@@ -251,6 +251,37 @@ describe('ThreeSixty', () => {
         });
     });
 
+    describe('::updateConfiguration', () => {
+        it('should update the hotspots in the DOM tree', () => {
+            const configuration = {angles: 36, anglesPerImage: 9, hotspots: [
+                {text: 'Lorem ipsum', angle: 0.5, endAngle: 0.7},
+                {text: 'Dolor sit amet', angle: 0.2, endAngle: 0.3}
+            ]};
+            const newConfiguration = {
+                angles: 18, anglesPerImage: 1, hotspots: [
+                    {text: 'foo', angle: 0.5, endAngle: 0.7, top: '30%', left: '50%'},
+                    {text: 'bar', angle: 0.2, endAngle: 0.3, top: '42%', left: '55%'}
+                ]
+            };
+
+            const threeSixty = new ThreeSixty(canvasElement, configuration);
+            threeSixty.initialize(imageUrls);
+
+            threeSixty.updateConfiguration(newConfiguration);
+
+            const threeSixtyWrapperElement = document.querySelector(`.${ThreeSixty.CONTAINER_CLASS}`);
+            const hotspotElements = threeSixtyWrapperElement.querySelectorAll(`.${ThreeSixty.HOTSPOT_CLASS}`);
+
+            expect(hotspotElements.length).toBe(2);
+            expect(hotspotElements[0].innerText).toBe('foo');
+            expect(hotspotElements[0].style.top).toBe('30%');
+            expect(hotspotElements[0].style.left).toBe('50%');
+            expect(hotspotElements[1].innerText).toBe('bar');
+            expect(hotspotElements[1].style.top).toBe('42%');
+            expect(hotspotElements[1].style.left).toBe('55%');
+        });
+    });
+
     describe('::preload', () => {
         it('should preload all images', (done) => {
             const threeSixty = new ThreeSixty(canvasElement, {angles: 36, anglesPerImage: 9});
