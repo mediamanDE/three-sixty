@@ -174,7 +174,7 @@ describe('ThreeSixty', () => {
                 expect(canvas2dContextMock.drawImage).toHaveBeenCalledWith(
                     dragImageMock,
                     0,
-                    -canvasElement.height * 3,
+                    -canvasElement.height * 4,
                     canvasElement.width,
                     canvasElement.height * 9
                 );
@@ -361,7 +361,7 @@ describe('ThreeSixty', () => {
                 expect(canvas2dContextMock.drawImage).toHaveBeenCalledWith(
                     newInitialImageMock,
                     0,
-                    -canvasElement.height * 3,
+                    -canvasElement.height * 4,
                     canvasElement.width,
                     canvasElement.height * 9
                 );
