@@ -3,6 +3,7 @@
 A library that makes creating a 360° viewer extremely easy.
 
 [![Build Status](https://travis-ci.org/mediamanDE/three-sixty.svg?branch=master)](https://travis-ci.org/mediamanDE/three-sixty)
+[![npm version](https://badge.fury.io/js/%40mediaman%2Fthree-sixty.svg)](https://badge.fury.io/js/%40mediaman%2Fthree-sixty)
 
 ## Features
 
