@@ -296,6 +296,81 @@ describe('ThreeSixty', () => {
         });
     });
 
+    describe('updateImages', () => {
+        const newImageUrls = [
+            'http://example.com/newImage-0.jpg',
+            'http://example.com/newImage-1.jpg',
+            'http://example.com/newImage-2.jpg',
+            'http://example.com/newImage-3.jpg',
+            'http://example.com/newImage-4.jpg',
+            'http://example.com/newImage-5.jpg'
+        ];
+
+        it('should re-render the images', (done) => {
+            const threeSixty = new ThreeSixty(canvasElement, {angles: 36, anglesPerImage: 9});
+            const imageLoader = threeSixty['imageLoader'] as ImageLoader;
+            const initialImageMock = new Image();
+            const newInitialImageMock = new Image();
+
+            spyOn(imageLoader, 'load').and.returnValues(
+                new Promise((resolve) => resolve(initialImageMock)),
+                new Promise((resolve) => resolve(newInitialImageMock))
+            );
+
+            threeSixty.initialize(imageUrls);
+
+            threeSixty.updateImages(newImageUrls);
+
+            expect(imageLoader.load).toHaveBeenCalledWith(newImageUrls[0]);
+
+            setTimeout(() => {
+                expect(canvas2dContextMock.drawImage).toHaveBeenCalledWith(
+                    newInitialImageMock,
+                    0,
+                    -0,
+                    canvasElement.width,
+                    canvasElement.height * 9
+                );
+
+                done();
+            }, 50);
+        });
+
+        it('should show the correct angle after re-rendering', (done) => {
+            const threeSixty = new ThreeSixty(canvasElement, {angles: 36, anglesPerImage: 9});
+            const imageLoader = threeSixty['imageLoader'] as ImageLoader;
+            const initialImageMock = new Image();
+            const newInitialImageMock = new Image();
+
+            spyOn(imageLoader, 'load').and.returnValues(
+                new Promise((resolve) => resolve(initialImageMock)),
+                new Promise((resolve) => resolve(initialImageMock)),
+                new Promise((resolve) => resolve(newInitialImageMock))
+            );
+
+            threeSixty.initialize(imageUrls);
+
+            (threeSixty['hammer'] as any).emit('panstart', {});
+            (threeSixty['hammer'] as any).emit('pan', {deltaX: 20, deltaY: 0});
+
+            threeSixty.updateImages(newImageUrls);
+
+            expect(imageLoader.load).toHaveBeenCalledWith(newImageUrls[3]);
+
+            setTimeout(() => {
+                expect(canvas2dContextMock.drawImage).toHaveBeenCalledWith(
+                    newInitialImageMock,
+                    0,
+                    -canvasElement.height * 3,
+                    canvasElement.width,
+                    canvasElement.height * 9
+                );
+
+                done();
+            }, 50);
+        });
+    });
+
     describe('::preload', () => {
         it('should preload all images', (done) => {
             const threeSixty = new ThreeSixty(canvasElement, {angles: 36, anglesPerImage: 9});
