@@ -11,8 +11,8 @@ describe('ThreeSixty', () => {
         'http://example.com/image-5.jpg'
     ];
     const hotspots = [
-        {text: 'Lorem ipsum', angle: 0.5, endAngle: 0.7, top: '30%', left: '50%'},
-        {text: 'Dolor sit amet', angle: 0.2, endAngle: 0.3, top: '42%', left: '55%'}
+        {text: 'Lorem ipsum', angle: 20, endAngle: 60, top: '30%', left: '50%'},
+        {text: 'Dolor sit amet', angle: 180, endAngle: 200, top: '42%', left: '55%'}
     ];
     let canvasElement: HTMLCanvasElement;
     let canvas2dContextMock;
@@ -115,13 +115,13 @@ describe('ThreeSixty', () => {
 
             threeSixty.initialize(imageUrls, 185);
 
-            expect(imageLoader.load).toHaveBeenCalledWith(imageUrls[1]);
+            expect(imageLoader.load).toHaveBeenCalledWith(imageUrls[2]);
 
             setTimeout(() => {
                 expect(canvas2dContextMock.drawImage).toHaveBeenCalledWith(
                     initialImageMock,
                     0,
-                    -canvasElement.height * 18,
+                    -canvasElement.height,
                     canvasElement.width,
                     canvasElement.height * 9
                 );
@@ -140,8 +140,8 @@ describe('ThreeSixty', () => {
 
         it('should show a hotspot when its configured angle is the start angle', () => {
             const threeSixty = new ThreeSixty(canvasElement, {angles: 36, anglesPerImage: 9, hotspots: [
-                {text: 'Lorem ipsum', angle: 0.5, endAngle: 0.7, top: '30%', left: '50%'},
-                {text: 'Dolor sit amet', angle: 0, endAngle: 0.3, top: '42%', left: '55%'}
+                {text: 'Lorem ipsum', angle: 180, endAngle: 320, top: '30%', left: '50%'},
+                {text: 'Dolor sit amet', angle: 0, endAngle: 10, top: '42%', left: '55%'}
             ]});
 
             threeSixty.initialize(imageUrls);
@@ -166,7 +166,7 @@ describe('ThreeSixty', () => {
             threeSixty.initialize(imageUrls);
 
             (threeSixty['hammer'] as any).emit('panstart', {});
-            (threeSixty['hammer'] as any).emit('pan', {deltaX: 20, deltaY: 0});
+            (threeSixty['hammer'] as any).emit('pan', {deltaX: -20, deltaY: 0});
 
             expect(imageLoader.load).toHaveBeenCalledWith(imageUrls[3]);
 
@@ -197,7 +197,7 @@ describe('ThreeSixty', () => {
             threeSixty.initialize(imageUrls);
 
             (threeSixty['hammer'] as any).emit('panstart', {});
-            (threeSixty['hammer'] as any).emit('pan', {deltaX: 20, deltaY: 0});
+            (threeSixty['hammer'] as any).emit('pan', {deltaX: -20, deltaY: 0});
 
             expect(imageLoader.load).toHaveBeenCalledWith(imageUrls[2]);
 
@@ -224,7 +224,7 @@ describe('ThreeSixty', () => {
             threeSixty.initialize(imageUrls);
 
             (threeSixty['hammer'] as any).emit('panstart', {});
-            (threeSixty['hammer'] as any).emit('pan', {deltaX: -2, deltaY: 0});
+            (threeSixty['hammer'] as any).emit('pan', {deltaX: 150, deltaY: 0});
 
             setTimeout(() => {
                 expect(threeSixty['angle']).toBeGreaterThan(0);
@@ -240,7 +240,7 @@ describe('ThreeSixty', () => {
             threeSixty.initialize(imageUrls);
 
             (threeSixty['hammer'] as any).emit('panstart', {});
-            (threeSixty['hammer'] as any).emit('pan', {deltaX: 40, deltaY: 0});
+            (threeSixty['hammer'] as any).emit('pan', {deltaX: -65, deltaY: 0});
 
             const threeSixtyWrapperElement = document.querySelector(`.${ThreeSixty.CONTAINER_CLASS}`);
             const hotspotElements = threeSixtyWrapperElement.querySelectorAll(`.${ThreeSixty.HOTSPOT_CLASS}`);
@@ -255,8 +255,8 @@ describe('ThreeSixty', () => {
             threeSixty.initialize(imageUrls);
 
             (threeSixty['hammer'] as any).emit('panstart', {});
-            (threeSixty['hammer'] as any).emit('pan', {deltaX: 40, deltaY: 0});
-            (threeSixty['hammer'] as any).emit('pan', {deltaX: 80, deltaY: 0});
+            (threeSixty['hammer'] as any).emit('pan', {deltaX: -40, deltaY: 0});
+            (threeSixty['hammer'] as any).emit('pan', {deltaX: -80, deltaY: 0});
 
             const threeSixtyWrapperElement = document.querySelector(`.${ThreeSixty.CONTAINER_CLASS}`);
             const hotspotElements = threeSixtyWrapperElement.querySelectorAll(`.${ThreeSixty.HOTSPOT_CLASS}`);
@@ -268,13 +268,13 @@ describe('ThreeSixty', () => {
     describe('::updateConfiguration', () => {
         it('should update the hotspots in the DOM tree', () => {
             const configuration = {angles: 36, anglesPerImage: 9, hotspots: [
-                {text: 'Lorem ipsum', angle: 0.5, endAngle: 0.7},
-                {text: 'Dolor sit amet', angle: 0.2, endAngle: 0.3}
+                {text: 'Lorem ipsum', angle: 180, endAngle: 320},
+                {text: 'Dolor sit amet', angle: 50, endAngle: 80}
             ]};
             const newConfiguration = {
                 angles: 18, anglesPerImage: 1, hotspots: [
-                    {text: 'foo', angle: 0.5, endAngle: 0.7, top: '30%', left: '50%'},
-                    {text: 'bar', angle: 0.2, endAngle: 0.3, top: '42%', left: '55%'}
+                    {text: 'foo', angle: 180, endAngle: 300, top: '30%', left: '50%'},
+                    {text: 'bar', angle: 20, endAngle: 40, top: '42%', left: '55%'}
                 ]
             };
 
@@ -351,7 +351,7 @@ describe('ThreeSixty', () => {
             threeSixty.initialize(imageUrls);
 
             (threeSixty['hammer'] as any).emit('panstart', {});
-            (threeSixty['hammer'] as any).emit('pan', {deltaX: 20, deltaY: 0});
+            (threeSixty['hammer'] as any).emit('pan', {deltaX: -20, deltaY: 0});
 
             threeSixty.updateImages(newImageUrls);
 

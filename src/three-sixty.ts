@@ -87,6 +87,7 @@ export default class ThreeSixty {
             throw new Error('The specified start angle must be between 0 and 360.');
         }
 
+        this.angle = 1 - (startAngle / 360);
         this.images = images;
 
         // Wrap the canvas element
@@ -98,18 +99,11 @@ export default class ThreeSixty {
         this.initializeHotspots();
         this.initializeEventListeners();
 
-        let targetImageIndex = Math.round(startAngle / (360 / this.configuration.angles)) - 1;
-        let targetSpriteIndex = Math.floor(targetImageIndex / this.configuration.anglesPerImage) - 1;
-
-        if (targetImageIndex < 0) {
-            targetImageIndex = 0;
-        }
-        if (targetSpriteIndex < 0) {
-            targetSpriteIndex = 0;
-        }
+        let targetImageIndex = Math.round(startAngle / (360 / this.configuration.angles));
+        let targetSpriteIndex = Math.floor(targetImageIndex / this.configuration.anglesPerImage);
 
         this.imageLoader.load(this.images[targetSpriteIndex])
-            .then((image) => this.drawAngle(image, targetImageIndex % this.configuration.angles));
+            .then((image) => this.drawAngle(image, targetImageIndex % this.configuration.anglesPerImage));
     }
 
     /**
@@ -202,8 +196,10 @@ export default class ThreeSixty {
      */
     private showActiveHotspots() {
         if (this.configuration.hotspots) {
+            const angleDegree = -360 * this.angle + 360;
+
             this.configuration.hotspots.forEach((hotspot: HotspotInterface, i: number) => {
-                if (hotspot.angle <= this.angle && hotspot.endAngle > this.angle) {
+                if (hotspot.angle <= angleDegree && hotspot.endAngle >= angleDegree) {
                     this.hotspotElements[i].classList.add(ThreeSixty.HOTSPOT_ACTIVE_CLASS);
                 } else {
                     this.hotspotElements[i].classList.remove(ThreeSixty.HOTSPOT_ACTIVE_CLASS);
@@ -273,7 +269,7 @@ export default class ThreeSixty {
     private onDrag(e: {deltaX: number}) {
 
         // Calculate new image angle
-        this.adaptAngle(e.deltaX);
+        this.adaptAngle(-e.deltaX);
 
         const imageIndexes = this.getImageIndexesForCurrentAngle();
 

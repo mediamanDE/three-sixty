@@ -140,15 +140,15 @@ const threeSixty = new ThreeSixty(document.getElementsByTagName('canvas')[0], {
     hotspots: [
         {
             text: 'Lorem ipsum 1',
-            angle: 0.78,
-            endAngle: 0.95,
+            angle: 0,
+            endAngle: 90,
             top: '25%',
             left: '27.5%'
         },
         {
             text: 'Lorem ipsum 2',
-            angle: 0.4,
-            endAngle: 0.6,
+            angle: 180,
+            endAngle: 240,
             top: '65%',
             left: '60%'
         }
