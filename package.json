@@ -21,7 +21,8 @@
   "scripts": {
     "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist",
-    "build": "tsc --module commonjs --outDir dist/lib && rollup -c rollup.config.ts && typedoc --out dist/docs --target es6 --theme minimal --mode file src && node-sass --output-style compressed src/scss/three-sixty.scss dist/three-sixty.css",
+    "build": "tsc --module commonjs --outDir dist/lib && rollup -c rollup.config.ts && typedoc --out dist/docs --target es6 --theme minimal --mode file src && npm run build-scss",
+    "build-scss": "node-sass --output-style compressed src/scss/three-sixty.scss dist/three-sixty.css && postcss --use autoprefixer -o dist/three-sixty.css dist/three-sixty.css",
     "start": "rollup -c rollup.config.ts -w",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -57,6 +58,7 @@
   "devDependencies": {
     "@types/jest": "^22.0.0",
     "@types/node": "^8.0.0",
+    "autoprefixer": "^7.2.5",
     "colors": "^1.1.2",
     "core-js": "^2.5.3",
     "coveralls": "^3.0.0",
@@ -66,6 +68,8 @@
     "lodash.camelcase": "^4.3.0",
     "marked": "^0.3.9",
     "node-sass": "^4.7.2",
+    "postcss": "^6.0.16",
+    "postcss-cli": "^4.1.1",
     "prettier": "^1.4.4",
     "prompt": "^1.0.0",
     "replace-in-file": "^3.0.0-beta.2",

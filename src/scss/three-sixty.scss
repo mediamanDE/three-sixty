@@ -1,3 +1,10 @@
+.three-sixty-container {
+    position: relative;
+    cursor: move;
+    cursor: -webkit-grab;
+    touch-action: none;
+}
+
 .three-sixty__hotspot {
     display: none;
     position: absolute;
