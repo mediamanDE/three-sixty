@@ -54,7 +54,7 @@ export default class ThreeSixty {
 
     /**
      * Angle of the current image
-     * Number between 0 and 1 in 0.01 steps
+     * Number between 0 and 360
      *
      * @type {number}
      */
@@ -87,7 +87,7 @@ export default class ThreeSixty {
             throw new Error('The specified start angle must be between 0 and 360.');
         }
 
-        this.angle = 1 - (startAngle / 360);
+        this.angle = startAngle;
         this.images = images;
 
         // Wrap the canvas element
@@ -99,11 +99,10 @@ export default class ThreeSixty {
         this.initializeHotspots();
         this.initializeEventListeners();
 
-        let targetImageIndex = Math.round(startAngle / (360 / this.configuration.angles));
-        let targetSpriteIndex = Math.floor(targetImageIndex / this.configuration.anglesPerImage);
+        const imageIndexes = this.getImageIndexesForCurrentAngle();
 
-        this.imageLoader.load(this.images[targetSpriteIndex])
-            .then((image) => this.drawAngle(image, targetImageIndex % this.configuration.anglesPerImage));
+        this.imageLoader.load(this.images[imageIndexes.targetSpriteIndex])
+            .then((image) => this.drawAngle(image, imageIndexes.targetImageIndex));
     }
 
     /**
@@ -196,10 +195,8 @@ export default class ThreeSixty {
      */
     private showActiveHotspots() {
         if (this.configuration.hotspots) {
-            const angleDegree = -360 * this.angle + 360;
-
             this.configuration.hotspots.forEach((hotspot: HotspotInterface, i: number) => {
-                if (hotspot.angle <= angleDegree && hotspot.endAngle >= angleDegree) {
+                if (hotspot.angle <= this.angle && hotspot.endAngle >= this.angle) {
                     this.hotspotElements[i].classList.add(ThreeSixty.HOTSPOT_ACTIVE_CLASS);
                 } else {
                     this.hotspotElements[i].classList.remove(ThreeSixty.HOTSPOT_ACTIVE_CLASS);
@@ -224,11 +221,8 @@ export default class ThreeSixty {
      * Get the target image indexes for the current angle
      */
     private getImageIndexesForCurrentAngle(): {targetImageIndex: number, targetSpriteIndex: number} {
-        const sn = Math.sin(this.angle * Math.PI * 2);
-        const cs = Math.cos(this.angle * Math.PI * 2);
-
-        const targetImageIndex = (Math.floor((Math.atan2(sn, -cs) / (Math.PI * 2) + 0.5) * this.configuration.angles) % this.configuration.angles);
-        const targetSpriteIndex = Math.floor(targetImageIndex / this.configuration.anglesPerImage);
+        let targetImageIndex = Math.round(this.angle / (360 / this.configuration.angles));
+        let targetSpriteIndex = Math.floor(targetImageIndex / this.configuration.anglesPerImage);
 
         return {targetImageIndex: targetImageIndex % this.configuration.anglesPerImage, targetSpriteIndex};
     }
@@ -297,13 +291,14 @@ export default class ThreeSixty {
 
         const width = window.innerWidth;
         const dx = (distance / width);
+        let tmpAngle = ((1 - (this.preDragAngle / 360)) + dx * 1.5);
 
-        this.angle = (this.preDragAngle + dx * 1.5);
-
-        while (this.angle < 0) {
-            this.angle++;
+        while (tmpAngle < 0) {
+            tmpAngle++;
         }
 
-        this.angle = this.angle % 1;
+        tmpAngle = tmpAngle % 1;
+
+        this.angle = -360 * tmpAngle + 360;
     }
 }
