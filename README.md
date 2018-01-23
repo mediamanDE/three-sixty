@@ -27,6 +27,14 @@ You can import the bundle to use the whole library:
 import ThreeSixty from '@mediaman/three-sixty';
 ```
 
+### Inside the browser
+
+You can also use the bundled version directly inside the browser:
+
+```html
+<script src="node_modules/@mediaman/three-sixty/dist/three-sixty.bundle.js"></script>
+```
+
 ## Usage
 
 ### Basic usage
