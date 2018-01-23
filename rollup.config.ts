@@ -1,7 +1,6 @@
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import sourceMaps from 'rollup-plugin-sourcemaps';
-import camelCase from 'lodash.camelcase';
 import typescript from 'rollup-plugin-typescript2';
 
 const pkg = require('./package.json');
@@ -11,7 +10,8 @@ const libraryName = 'three-sixty';
 export default {
     input: `src/${libraryName}.ts`,
     output: [
-        {file: pkg.main, name: camelCase(libraryName), format: 'umd'},
+        {file: pkg.main, name: 'ThreeSixty', format: 'umd'},
+        {file: 'dist/three-sixty.bundle.js', name: 'ThreeSixty', format: 'cjs'},
         {file: pkg.module, format: 'es'},
     ],
     sourcemap: true,
