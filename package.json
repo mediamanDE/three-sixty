@@ -21,8 +21,9 @@
   "scripts": {
     "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist",
-    "build": "tsc --module commonjs --outDir dist/lib && rollup -c rollup.config.ts && typedoc --out dist/docs --target es6 --theme minimal --mode file src && npm run build-scss",
+    "build": "tsc --module commonjs --outDir dist/lib && rollup -c rollup.config.ts && typedoc --out dist/docs --target es6 --theme minimal --mode file src && npm run build-scss && npm run build-browser",
     "build-scss": "node-sass --output-style compressed src/scss/three-sixty.scss dist/three-sixty.css && postcss --use autoprefixer -o dist/three-sixty.css dist/three-sixty.css",
+    "build-browser": "browserify dist/three-sixty.bundle.js --standalone ThreeSixty -o dist/three-sixty.bundle.js",
     "start": "rollup -c rollup.config.ts -w",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -59,6 +60,7 @@
     "@types/jest": "^22.0.0",
     "@types/node": "^8.0.0",
     "autoprefixer": "^7.2.5",
+    "browserify": "^15.2.0",
     "colors": "^1.1.2",
     "core-js": "^2.5.3",
     "coveralls": "^3.0.0",
