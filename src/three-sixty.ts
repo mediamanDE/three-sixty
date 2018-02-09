@@ -1,6 +1,7 @@
 import { ConfigurationInterface } from './interfaces/configuration.interface';
 import { ImageLoader } from './image-loader';
 import { HotspotInterface } from './interfaces/hotspot.interface';
+import { ImageSetInterface } from './interfaces/image-set.interface';
 const Hammer = require('hammerjs');
 
 export default class ThreeSixty {
@@ -26,6 +27,13 @@ export default class ThreeSixty {
      * @type {string[]}
      */
     private images: string[];
+
+    /**
+     * Image configuration
+     *
+     * @type {ImageSetInterface}
+     */
+    private imageSet: ImageSetInterface;
 
     /**
      * @type {Hammer}
@@ -79,16 +87,17 @@ export default class ThreeSixty {
     /**
      * Initialize the three sixty widget
      *
-     * @param {string[]} images - Array of image sprites
+     * @param {ImageSetInterface} imageSet - Array of image sprites
      * @param {number} startAngle - The initial angle to show (number between 0 and 360)
      */
-    public initialize(images: string[], startAngle: number = 0) {
+    public initialize(imageSet: ImageSetInterface, startAngle: number = 0) {
         if (startAngle < 0 || startAngle > 360) {
             throw new Error('The specified start angle must be between 0 and 360.');
         }
 
         this.angle = startAngle;
-        this.images = images;
+        this.imageSet = imageSet;
+        this.images = this.getActiveImages();
 
         // Wrap the canvas element
         this.containerElement = document.createElement('div');
@@ -122,11 +131,11 @@ export default class ThreeSixty {
     /**
      * Update and re-render the images
      *
-     * @param {string[]} images
+     * @param {ImageSetInterface} imageSet
      */
-    public updateImages(images: string[]) {
-        this.images.splice(0);
-        this.images.push(...images);
+    public updateImages(imageSet: ImageSetInterface) {
+        this.imageSet = imageSet;
+        this.images = this.getActiveImages();
 
         const imageIndexes = this.getImageIndexesForCurrentAngle();
 
@@ -162,6 +171,23 @@ export default class ThreeSixty {
 
             this.images.forEach(preloadImage.bind(this));
         });
+    }
+
+    /**
+     * Get the active images for the current browser width
+     *
+     * @returns {string[]}
+     */
+    private getActiveImages(): string[] {
+        const width = window.outerWidth;
+        const breakpoints = Object.keys(this.imageSet);
+
+        const activeBreakpoint = breakpoints.sort().reverse().find((breakpoint: string) => {
+            if (parseFloat(breakpoint) <= width) {
+                return true;
+            }
+        });
+        return this.imageSet[activeBreakpoint];
     }
 
     /**

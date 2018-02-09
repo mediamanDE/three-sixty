@@ -39,6 +39,9 @@ You can also use the bundled version directly inside the browser:
 
 ### Basic usage
 
+You can specify different sets of images for different media queries. The object key is the breakpoint in px from which the
+image set should be shown from.
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -60,14 +63,16 @@ const threeSixty = new ThreeSixty(document.getElementsByTagName('canvas')[0], {
     anglesPerImage: 6
 });
 
-threeSixty.initialize([
-    'http://example.com/images/360/image-0.jpg',
-    'http://example.com/images/360/image-1.jpg',
-    'http://example.com/images/360/image-2.jpg',
-    'http://example.com/images/360/image-3.jpg',
-    'http://example.com/images/360/image-4.jpg',
-    'http://example.com/images/360/image-5.jpg'
-]);
+threeSixty.initialize({
+    0: [ // The breakpoint from which the image set should be shown
+        'http://example.com/images/360/image-0.jpg',
+        'http://example.com/images/360/image-1.jpg',
+        'http://example.com/images/360/image-2.jpg',
+        'http://example.com/images/360/image-3.jpg',
+        'http://example.com/images/360/image-4.jpg',
+        'http://example.com/images/360/image-5.jpg'
+    ]
+});
 ```
 
 ### Preloading
@@ -80,14 +85,16 @@ const threeSixty = new ThreeSixty(document.getElementsByTagName('canvas')[0], {
     anglesPerImage: 6
 });
 
-threeSixty.initialize([
-    'http://example.com/images/360/image-0.jpg',
-    'http://example.com/images/360/image-1.jpg',
-    'http://example.com/images/360/image-2.jpg',
-    'http://example.com/images/360/image-3.jpg',
-    'http://example.com/images/360/image-4.jpg',
-    'http://example.com/images/360/image-5.jpg'
-]);
+threeSixty.initialize({
+    0: [
+        'http://example.com/images/360/image-0.jpg',
+        'http://example.com/images/360/image-1.jpg',
+        'http://example.com/images/360/image-2.jpg',
+        'http://example.com/images/360/image-3.jpg',
+        'http://example.com/images/360/image-4.jpg',
+        'http://example.com/images/360/image-5.jpg'
+    ]
+});
 
 threeSixty.preload().then(() => console.log('ready to go'));
 ```
@@ -102,18 +109,20 @@ const threeSixty = new ThreeSixty(document.getElementsByTagName('canvas')[0], {
     anglesPerImage: 1
 });
 
-threeSixty.initialize([
-    'http://example.com/images/360/image-0.jpg',
-    'http://example.com/images/360/image-1.jpg',
-    'http://example.com/images/360/image-2.jpg',
-    'http://example.com/images/360/image-3.jpg',
-    'http://example.com/images/360/image-4.jpg',
-    'http://example.com/images/360/image-5.jpg',
-    'http://example.com/images/360/image-6.jpg',
-    'http://example.com/images/360/image-7.jpg',
-    'http://example.com/images/360/image-8.jpg',
-    'http://example.com/images/360/image-9.jpg'
-]);
+threeSixty.initialize({
+    0: [
+        'http://example.com/images/360/image-0.jpg',
+        'http://example.com/images/360/image-1.jpg',
+        'http://example.com/images/360/image-2.jpg',
+        'http://example.com/images/360/image-3.jpg',
+        'http://example.com/images/360/image-4.jpg',
+        'http://example.com/images/360/image-5.jpg',
+        'http://example.com/images/360/image-6.jpg',
+        'http://example.com/images/360/image-7.jpg',
+        'http://example.com/images/360/image-8.jpg',
+        'http://example.com/images/360/image-9.jpg'
+    ]
+});
 ```
 
 ### Alter the speed
@@ -127,14 +136,16 @@ const threeSixty = new ThreeSixty(document.getElementsByTagName('canvas')[0], {
     speedFactor: 1
 });
 
-threeSixty.initialize([
-    'http://example.com/images/360/image-0.jpg',
-    'http://example.com/images/360/image-1.jpg',
-    'http://example.com/images/360/image-2.jpg',
-    'http://example.com/images/360/image-3.jpg',
-    'http://example.com/images/360/image-4.jpg',
-    'http://example.com/images/360/image-5.jpg'
-]);
+threeSixty.initialize({
+    0: [
+      'http://example.com/images/360/image-0.jpg',
+      'http://example.com/images/360/image-1.jpg',
+      'http://example.com/images/360/image-2.jpg',
+      'http://example.com/images/360/image-3.jpg',
+      'http://example.com/images/360/image-4.jpg',
+      'http://example.com/images/360/image-5.jpg'
+    ]
+});
 ```
 
 ### Hotspots
@@ -163,12 +174,14 @@ const threeSixty = new ThreeSixty(document.getElementsByTagName('canvas')[0], {
     ]
 });
 
-threeSixty.initialize([
-    'http://example.com/images/360/image-0.jpg',
-    'http://example.com/images/360/image-1.jpg',
-    'http://example.com/images/360/image-2.jpg',
-    'http://example.com/images/360/image-3.jpg',
-    'http://example.com/images/360/image-4.jpg',
-    'http://example.com/images/360/image-5.jpg'
-]);
+threeSixty.initialize({
+    0: [
+      'http://example.com/images/360/image-0.jpg',
+      'http://example.com/images/360/image-1.jpg',
+      'http://example.com/images/360/image-2.jpg',
+      'http://example.com/images/360/image-3.jpg',
+      'http://example.com/images/360/image-4.jpg',
+      'http://example.com/images/360/image-5.jpg'
+    ]
+});
 ```

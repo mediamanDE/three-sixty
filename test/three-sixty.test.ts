@@ -27,6 +27,8 @@ describe('ThreeSixty', () => {
         canvas2dContextMock = {drawImage: jasmine.createSpy('canvas2dContextMock.drawImage')};
 
         spyOn(canvasElement, 'getContext').and.returnValue(canvas2dContextMock);
+
+        Object.defineProperty(window, 'outerWidth', {value: 1024});
     });
 
     afterEach(() => {
@@ -41,7 +43,7 @@ describe('ThreeSixty', () => {
         it('should wrap the canvas', () => {
             const threeSixty = new ThreeSixty(canvasElement, {angles: 36, anglesPerImage: 9});
 
-            threeSixty.initialize(imageUrls);
+            threeSixty.initialize({1024: imageUrls});
 
             const threeSixtyWrapperElement = document.querySelector(`.${ThreeSixty.CONTAINER_CLASS}`);
 
@@ -51,7 +53,7 @@ describe('ThreeSixty', () => {
         it('should add the configured hotspots to the DOM tree', () => {
             const threeSixty = new ThreeSixty(canvasElement, {angles: 36, anglesPerImage: 9, hotspots: hotspots});
 
-            threeSixty.initialize(imageUrls);
+            threeSixty.initialize({1024: imageUrls});
 
             const threeSixtyWrapperElement = document.querySelector(`.${ThreeSixty.CONTAINER_CLASS}`);
             const hotspotElements = threeSixtyWrapperElement.querySelectorAll(`.${ThreeSixty.HOTSPOT_CLASS}`);
@@ -71,7 +73,7 @@ describe('ThreeSixty', () => {
                 {text: 'Dolor sit amet', angle: 0.2, endAngle: 0.3}
             ]});
 
-            threeSixty.initialize(imageUrls);
+            threeSixty.initialize({1024: imageUrls});
 
             const threeSixtyWrapperElement = document.querySelector(`.${ThreeSixty.CONTAINER_CLASS}`);
             const hotspotElements = threeSixtyWrapperElement.querySelectorAll(`.${ThreeSixty.HOTSPOT_CLASS}`);
@@ -89,7 +91,7 @@ describe('ThreeSixty', () => {
 
             spyOn(imageLoader, 'load').and.returnValue(new Promise((resolve) => resolve(initialImageMock)));
 
-            threeSixty.initialize(imageUrls);
+            threeSixty.initialize({1024: imageUrls});
 
             expect(imageLoader.load).toHaveBeenCalledWith(imageUrls[0]);
 
@@ -113,7 +115,7 @@ describe('ThreeSixty', () => {
 
             spyOn(imageLoader, 'load').and.returnValue(new Promise((resolve) => resolve(initialImageMock)));
 
-            threeSixty.initialize(imageUrls, 185);
+            threeSixty.initialize({1024: imageUrls}, 185);
 
             expect(imageLoader.load).toHaveBeenCalledWith(imageUrls[2]);
 
@@ -134,8 +136,8 @@ describe('ThreeSixty', () => {
             const expectedErrorMessage = 'The specified start angle must be between 0 and 360.';
             const threeSixty = new ThreeSixty(canvasElement, {angles: 36, anglesPerImage: 9});
 
-            expect(() => threeSixty.initialize(imageUrls, -1)).toThrow(expectedErrorMessage);
-            expect(() => threeSixty.initialize(imageUrls, 361)).toThrow(expectedErrorMessage);
+            expect(() => threeSixty.initialize({1024: imageUrls}, -1)).toThrow(expectedErrorMessage);
+            expect(() => threeSixty.initialize({1024: imageUrls}, 361)).toThrow(expectedErrorMessage);
         });
 
         it('should show a hotspot when its configured angle is the start angle', () => {
@@ -144,7 +146,7 @@ describe('ThreeSixty', () => {
                 {text: 'Dolor sit amet', angle: 0, endAngle: 10, top: '42%', left: '55%'}
             ]});
 
-            threeSixty.initialize(imageUrls);
+            threeSixty.initialize({1024: imageUrls});
 
             const threeSixtyWrapperElement = document.querySelector(`.${ThreeSixty.CONTAINER_CLASS}`);
             const hotspotElements = threeSixtyWrapperElement.querySelectorAll(`.${ThreeSixty.HOTSPOT_CLASS}`);
@@ -163,7 +165,7 @@ describe('ThreeSixty', () => {
                 new Promise((resolve) => resolve(dragImageMock))
             );
 
-            threeSixty.initialize(imageUrls);
+            threeSixty.initialize({1024: imageUrls});
 
             (threeSixty['hammer'] as any).emit('panstart', {});
             (threeSixty['hammer'] as any).emit('pan', {deltaX: -20, deltaY: 0});
@@ -194,7 +196,7 @@ describe('ThreeSixty', () => {
                 new Promise((resolve) => resolve(dragImageMock))
             );
 
-            threeSixty.initialize(imageUrls);
+            threeSixty.initialize({1024: imageUrls});
 
             (threeSixty['hammer'] as any).emit('panstart', {});
             (threeSixty['hammer'] as any).emit('pan', {deltaX: -20, deltaY: 0});
@@ -221,7 +223,7 @@ describe('ThreeSixty', () => {
 
             spyOn(imageLoader, 'load').and.returnValue(new Promise((resolve) => resolve(initialImageMock)));
 
-            threeSixty.initialize(imageUrls);
+            threeSixty.initialize({1024: imageUrls});
 
             (threeSixty['hammer'] as any).emit('panstart', {});
             (threeSixty['hammer'] as any).emit('pan', {deltaX: 150, deltaY: 0});
@@ -233,11 +235,32 @@ describe('ThreeSixty', () => {
             }, 50);
         });
 
+        it('should update the active image set when the window width changes', () => {
+            const threeSixty = new ThreeSixty(canvasElement, {angles: 36, anglesPerImage: 9, speedFactor: 10});
+            const imageLoader = threeSixty['imageLoader'] as ImageLoader;
+            const initialImageMock = new Image();
+            const dragImageMock = new Image();
+
+            spyOn(imageLoader, 'load').and.returnValues(
+                new Promise((resolve) => resolve(initialImageMock)),
+                new Promise((resolve) => resolve(dragImageMock))
+            );
+
+            Object.defineProperty(window, 'outerWidth', {value: 320});
+
+            threeSixty.initialize({0: ['1', '2', '3'], 1024: imageUrls});
+
+            (threeSixty['hammer'] as any).emit('panstart', {});
+            (threeSixty['hammer'] as any).emit('pan', {deltaX: -20, deltaY: 0});
+
+            expect(imageLoader.load).toHaveBeenCalledWith('3');
+        });
+
         it('should show a hotspot when its configured angle gets reached', () => {
             const threeSixty = new ThreeSixty(canvasElement, {angles: 36, anglesPerImage: 9, hotspots: hotspots});
             const imageLoader = threeSixty['imageLoader'] as ImageLoader;
 
-            threeSixty.initialize(imageUrls);
+            threeSixty.initialize({1024: imageUrls});
 
             (threeSixty['hammer'] as any).emit('panstart', {});
             (threeSixty['hammer'] as any).emit('pan', {deltaX: -65, deltaY: 0});
@@ -252,7 +275,7 @@ describe('ThreeSixty', () => {
             const threeSixty = new ThreeSixty(canvasElement, {angles: 36, anglesPerImage: 9, hotspots: hotspots});
             const imageLoader = threeSixty['imageLoader'] as ImageLoader;
 
-            threeSixty.initialize(imageUrls);
+            threeSixty.initialize({1024: imageUrls});
 
             (threeSixty['hammer'] as any).emit('panstart', {});
             (threeSixty['hammer'] as any).emit('pan', {deltaX: -40, deltaY: 0});
@@ -279,7 +302,7 @@ describe('ThreeSixty', () => {
             };
 
             const threeSixty = new ThreeSixty(canvasElement, configuration);
-            threeSixty.initialize(imageUrls);
+            threeSixty.initialize({1024: imageUrls});
 
             threeSixty.updateConfiguration(newConfiguration);
 
@@ -317,9 +340,9 @@ describe('ThreeSixty', () => {
                 new Promise((resolve) => resolve(newInitialImageMock))
             );
 
-            threeSixty.initialize(imageUrls);
+            threeSixty.initialize({1024: imageUrls});
 
-            threeSixty.updateImages(newImageUrls);
+            threeSixty.updateImages({1024: newImageUrls});
 
             expect(imageLoader.load).toHaveBeenCalledWith(newImageUrls[0]);
 
@@ -348,12 +371,12 @@ describe('ThreeSixty', () => {
                 new Promise((resolve) => resolve(newInitialImageMock))
             );
 
-            threeSixty.initialize(imageUrls);
+            threeSixty.initialize({1024: imageUrls});
 
             (threeSixty['hammer'] as any).emit('panstart', {});
             (threeSixty['hammer'] as any).emit('pan', {deltaX: -20, deltaY: 0});
 
-            threeSixty.updateImages(newImageUrls);
+            threeSixty.updateImages({1024: newImageUrls});
 
             expect(imageLoader.load).toHaveBeenCalledWith(newImageUrls[3]);
 
@@ -379,7 +402,7 @@ describe('ThreeSixty', () => {
 
             spyOn(imageLoader, 'load').and.returnValue(new Promise((resolve) => resolve(imageMock)));
 
-            threeSixty.initialize(imageUrls);
+            threeSixty.initialize({1024: imageUrls});
             threeSixty.preload().then(() => {
                 expect(imageLoader.load).toHaveBeenCalledWith(imageUrls[0]);
                 expect(imageLoader.load).toHaveBeenCalledWith(imageUrls[1]);
