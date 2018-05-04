@@ -12,7 +12,11 @@ export class ImageLoader {
      * @returns {Promise<Image>}
      */
     public load(url: string): Promise<any> {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
+            if (!url) {
+                return reject();
+            }
+
             if (this.cache.hasOwnProperty(url)) {
                 return resolve(this.cache[url]);
             }

@@ -51,5 +51,11 @@ describe('ImageLoader', () => {
 
             onload();
         });
+
+        it('should reject if the image URL is invalid', (done) => {
+            imageLoader.load(null).then(() => null, done);
+
+            onload();
+        });
     });
 });
