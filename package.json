@@ -1,6 +1,6 @@
 {
   "name": "@mediaman/three-sixty",
-  "version": "0.0.9",
+  "version": "1.0.0",
   "description": "360° library",
   "keywords": [],
   "main": "dist/three-sixty.umd.js",
@@ -65,6 +65,7 @@
     "core-js": "^2.5.3",
     "coveralls": "^3.0.0",
     "cross-env": "^5.0.1",
+    "hoek": "^5.0.3",
     "husky": "^0.14.0",
     "jest": "^22.0.2",
     "lodash.camelcase": "^4.3.0",

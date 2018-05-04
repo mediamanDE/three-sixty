@@ -286,6 +286,35 @@ describe('ThreeSixty', () => {
 
             expect(hotspotElements[1].classList).not.toContain(ThreeSixty.HOTSPOT_ACTIVE_CLASS);
         });
+
+        it('should handle rejected images', (done) => {
+            const threeSixty = new ThreeSixty(canvasElement, {angles: 36, anglesPerImage: 9});
+            const imageLoader = threeSixty['imageLoader'] as ImageLoader;
+
+            spyOn(imageLoader, 'load').and.returnValue(new Promise((resolve, reject) => reject()));
+
+            threeSixty.initialize({1024: imageUrls});
+
+            setTimeout(done);
+        });
+
+        it('should handle rejected images on drag', (done) => {
+            const threeSixty = new ThreeSixty(canvasElement, {angles: 36, anglesPerImage: 9});
+            const imageLoader = threeSixty['imageLoader'] as ImageLoader;
+            const initialImageMock = new Image();
+
+            spyOn(imageLoader, 'load').and.returnValues(
+                new Promise((resolve) => resolve(initialImageMock)),
+                new Promise((resolve, reject) => reject())
+            );
+
+            threeSixty.initialize({1024: imageUrls});
+
+            (threeSixty['hammer'] as any).emit('panstart', {});
+            (threeSixty['hammer'] as any).emit('pan', {deltaX: -20, deltaY: 0});
+
+            setTimeout(done);
+        });
     });
 
     describe('::updateConfiguration', () => {
@@ -392,6 +421,23 @@ describe('ThreeSixty', () => {
                 done();
             }, 50);
         });
+
+        it('should handle rejected images', (done) => {
+            const threeSixty = new ThreeSixty(canvasElement, {angles: 36, anglesPerImage: 9});
+            const imageLoader = threeSixty['imageLoader'] as ImageLoader;
+            const initialImageMock = new Image();
+
+            spyOn(imageLoader, 'load').and.returnValues(
+                new Promise((resolve) => resolve(initialImageMock)),
+                new Promise((resolve, reject) => reject())
+            );
+
+            threeSixty.initialize({1024: imageUrls});
+
+            threeSixty.updateImages({1024: newImageUrls});
+
+            setTimeout(done);
+        });
     });
 
     describe('::preload', () => {
@@ -411,6 +457,16 @@ describe('ThreeSixty', () => {
 
                 done();
             });
+        });
+
+        it('handle rejected images', (done) => {
+            const threeSixty = new ThreeSixty(canvasElement, {angles: 36, anglesPerImage: 9});
+            const imageLoader = threeSixty['imageLoader'] as ImageLoader;
+
+            spyOn(imageLoader, 'load').and.returnValue(new Promise((resolve, reject) => reject()));
+
+            threeSixty.initialize({1024: imageUrls});
+            threeSixty.preload().then(done);
         });
     });
 });

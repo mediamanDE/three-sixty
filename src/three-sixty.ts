@@ -111,7 +111,10 @@ export default class ThreeSixty {
         const imageIndexes = this.getImageIndexesForCurrentAngle();
 
         this.imageLoader.load(this.images[imageIndexes.targetSpriteIndex])
-            .then((image) => this.drawAngle(image, imageIndexes.targetImageIndex));
+            .then(
+                (image) => this.drawAngle(image, imageIndexes.targetImageIndex),
+                () => null
+            );
     }
 
     /**
@@ -140,7 +143,10 @@ export default class ThreeSixty {
         const imageIndexes = this.getImageIndexesForCurrentAngle();
 
         this.imageLoader.load(this.images[imageIndexes.targetSpriteIndex])
-            .then((image) => this.drawAngle(image, imageIndexes.targetImageIndex));
+            .then(
+                (image) => this.drawAngle(image, imageIndexes.targetImageIndex),
+                () => null
+            );
     }
 
     /**
@@ -159,14 +165,16 @@ export default class ThreeSixty {
              * @param {string} url
              */
             const preloadImage = (url: string) => {
-                this.imageLoader.load(url)
-                    .then(() => {
-                        imagesLoaded++;
+                const imageLoaded = () => {
+                    imagesLoaded++;
 
-                        if (imagesLoaded === this.images.length) {
-                            resolve();
-                        }
-                    });
+                    if (imagesLoaded === this.images.length) {
+                        resolve();
+                    }
+                };
+
+                this.imageLoader.load(url)
+                    .then(imageLoaded, imageLoaded);
             };
 
             this.images.forEach(preloadImage.bind(this));
@@ -295,7 +303,10 @@ export default class ThreeSixty {
 
         // Load and render new image angle
         this.imageLoader.load(this.images[imageIndexes.targetSpriteIndex])
-            .then((image) => this.drawAngle(image, (imageIndexes.targetImageIndex)));
+            .then(
+                (image) => this.drawAngle(image, (imageIndexes.targetImageIndex)),
+                () => null
+            );
 
         this.showActiveHotspots();
     }
