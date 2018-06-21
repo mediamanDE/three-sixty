@@ -1,6 +1,6 @@
 {
   "name": "@mediaman/three-sixty",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "360° library",
   "keywords": [],
   "main": "dist/three-sixty.umd.js",
