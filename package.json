@@ -1,6 +1,6 @@
 {
   "name": "@mediaman/three-sixty",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "360° library",
   "keywords": [],
   "main": "dist/three-sixty.umd.js",
@@ -70,7 +70,7 @@
     "jest": "^22.0.2",
     "lodash.camelcase": "^4.3.0",
     "marked": "^0.3.9",
-    "node-sass": "^4.7.2",
+    "node-sass": "^4.9.0",
     "postcss": "^6.0.16",
     "postcss-cli": "^4.1.1",
     "prettier": "^1.4.4",
